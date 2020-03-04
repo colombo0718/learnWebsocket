@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>模拟登陆实例</title>
+
+    <script type="text/javascript">
+        function sendLoginInfo() {
+
+            var input_username = document.getElementById("input_username");
+            var input_password = document.getElementById("input_password");
+
+            var username = input_username.value;
+            var password = input_password.value;
+
+            var loginInfo = username + "*****" + password;
+
+            // 打开连接
+            var ws = new WebSocket("ws://localhost:4200");
+
+            // 发送数据
+            ws.onopen = function () {
+                // 使用send()方法发送数据
+                ws.send(loginInfo);
+            };
+
+            // 接收数据
+            ws.onmessage = function (evt) {
+                var received_msg = evt.data;
+                alert(received_msg);
+                // 作为一个好习惯，在接收完数据后就关闭连接，这样可以减少服务器的负担
+                ws.close();
+            };
+
+            // 关闭连接后的事件
+            ws.onclose = function () {
+            };
+        }
+    </script>
+</head>
+<body>
+<div id="sse">
+    <table>
+        <tr>
+            <td>用户名</td>
+            <td><input type="text" id="input_username" style="width:200px"></td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td><input type="password" id="input_password" style="width:200px"></td>
+        </tr>
+    </table>
+    <input id="btn_login" type="button" value="登陆" onclick="sendLoginInfo()" style="width:270px;">
+</div>
+</body>
+</html>
